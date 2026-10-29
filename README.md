@@ -51,7 +51,7 @@ Generated `Build/` and `Builds/` folders are intentionally excluded from source 
 - C# and Unity Editor scene-builder tooling
 - Tripo image-to-3D, Auto Rig, and animation generation
 - OpenAI Codex for planning, C# implementation, debugging assistance, validation support, and documentation
-- Audio generation tool: **TBD — audio has not yet been created or imported**
+- Audio source/generation tool: **TBD — four supplied WAV files were imported from the student's Downloads folder, but their original creation tool and terms were not recorded**
 - Trailer generation/editing tool: **TBD — trailer has not yet been created**
 
 ## Tripo assets
@@ -66,7 +66,7 @@ The animated **ThiefCharacter** is also present. The optional **RomanPillar** Tr
 
 ## Audio status
 
-Gameplay audio is currently **missing**. Before submission, add and test artifact-pickup, damage/alarm, and win sounds; then document their actual prompts, files, sources, and terms in [PROMPT_LOG.md](PROMPT_LOG.md) and [ATTRIBUTION.md](ATTRIBUTION.md). Background music is optional.
+Gameplay audio is integrated: `pickup.wav` plays after a successful artifact collection, `alarm.wav` plays only when damage passes the health cooldown, `win.wav` plays once on victory, and `music.wav` loops during gameplay. The builder creates separate 2D Music and SFX AudioSources. A final human listening pass is still required to confirm volume balance and the files' original creation tool/terms; see [ATTRIBUTION.md](ATTRIBUTION.md).
 
 ## Trailer status
 

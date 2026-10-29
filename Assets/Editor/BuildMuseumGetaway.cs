@@ -16,6 +16,7 @@ using UnityEngine.UI;
 public static class BuildMuseumGetaway
 {
     private const int CameraObstacleLayer = 8;
+    private const int GameplayHiddenRoofLayer = 9;
     private const string ScenePath = "Assets/Scenes/MuseumGetaway.unity";
     private const string MainMenuScenePath = "Assets/Scenes/MainMenu.unity";
     private const string MaterialFolder = "Assets/Art/Materials";
@@ -34,6 +35,10 @@ public static class BuildMuseumGetaway
     private const string ImportedThiefWalkClipName = "A cartoon museum thief sneaking cautiously through a museum, wa";
     private const string ImportedThiefIdleClipName = "idle.001";
     private const string ImportedThiefVictoryClipName = "A short, exaggerated cartoon victory celebration for a goofy mu";
+    private const string PickupAudioPath = "Assets/Audio/SFX/pickup.wav";
+    private const string DamageAudioPath = "Assets/Audio/SFX/alarm.wav";
+    private const string WinAudioPath = "Assets/Audio/SFX/win.wav";
+    private const string MusicAudioPath = "Assets/Audio/Music/music.wav";
 
     [MenuItem("Tools/Build Museum Getaway")]
     public static void BuildGame()
@@ -58,6 +63,12 @@ public static class BuildMuseumGetaway
 
         AssetDatabase.Refresh();
         EnsureProjectFolders();
+        ConfigureAudioImporters();
+
+        AudioClip pickupClip = AssetDatabase.LoadAssetAtPath<AudioClip>(PickupAudioPath);
+        AudioClip damageClip = AssetDatabase.LoadAssetAtPath<AudioClip>(DamageAudioPath);
+        AudioClip winClip = AssetDatabase.LoadAssetAtPath<AudioClip>(WinAudioPath);
+        AudioClip musicClip = AssetDatabase.LoadAssetAtPath<AudioClip>(MusicAudioPath);
 
         GameObject goldenIdolModel = LoadOptionalModel("Golden Idol", GoldenIdolPath);
         GameObject laserEmitterModel = LoadOptionalModel("Laser Emitter", LaserEmitterPath, AlternateLaserEmitterPath);
@@ -86,6 +97,7 @@ public static class BuildMuseumGetaway
         GameObject gameplayRoot = new GameObject("GAMEPLAY");
 
         MuseumGameManager manager = new GameObject("Museum Game Manager").AddComponent<MuseumGameManager>();
+        BuildAudio(gameplayRoot.transform, manager, pickupClip, damageClip, winClip, musicClip);
 
         GameObject player = BuildPlayer(
             gameplayRoot.transform,
@@ -124,13 +136,23 @@ public static class BuildMuseumGetaway
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
 
-        Selection.activeObject = AssetDatabase.LoadAssetAtPath<SceneAsset>(ScenePath);
+        SceneAsset mainMenuScene = AssetDatabase.LoadAssetAtPath<SceneAsset>(MainMenuScenePath);
+        if (!Application.isBatchMode && mainMenuScene != null)
+        {
+            EditorSceneManager.OpenScene(MainMenuScenePath, OpenSceneMode.Single);
+            Selection.activeObject = mainMenuScene;
+        }
+        else
+        {
+            Selection.activeObject = AssetDatabase.LoadAssetAtPath<SceneAsset>(ScenePath);
+        }
+
         Debug.Log("Museum Getaway procedural scene built successfully at " + ScenePath);
         if (!Application.isBatchMode)
         {
             EditorUtility.DisplayDialog(
                 "Museum Getaway",
-                "Procedural gameplay scene created successfully.\n\nOpen the Game view and press Play to test it.",
+                "Procedural gameplay scene created successfully.\n\nMainMenu is open and remains Scene 0. Open the Game view and press Play to begin at the menu.",
                 "OK");
         }
     }
@@ -149,16 +171,17 @@ public static class BuildMuseumGetaway
 
         CreateCameraObstaclePrimitive("Entrance Header", PrimitiveType.Cube, new Vector3(0f, 3.55f, -8.7f), new Vector3(5f, 0.6f, 0.5f), walls, parent);
 
-        GameObject roofRoot = new GameObject("ROOF - Disabled For Gameplay Camera");
+        GameObject roofRoot = new GameObject("ROOF - Gameplay Hidden");
         roofRoot.transform.SetParent(parent);
-        CreatePrimitive(
+        roofRoot.layer = GameplayHiddenRoofLayer;
+        GameObject roofObject = CreatePrimitive(
             "Flat Museum Roof",
             PrimitiveType.Cube,
             new Vector3(0f, 4.2f, 0f),
             new Vector3(24.4f, 0.25f, 18.4f),
             roof,
             roofRoot.transform);
-        roofRoot.SetActive(false);
+        roofObject.layer = GameplayHiddenRoofLayer;
     }
 
     private static void BuildClassicalPillars(
@@ -519,6 +542,7 @@ public static class BuildMuseumGetaway
         camera.backgroundColor = new Color(0.015f, 0.02f, 0.035f);
         camera.nearClipPlane = 0.1f;
         camera.farClipPlane = 50f;
+        camera.cullingMask &= ~(1 << GameplayHiddenRoofLayer);
         cameraObject.AddComponent<AudioListener>();
         cameraObject.AddComponent<SimpleFollowCamera>().Configure(
             manager,
@@ -529,6 +553,66 @@ public static class BuildMuseumGetaway
             initialPitch,
             horizontalSensitivity,
             verticalSensitivity);
+    }
+
+    private static void BuildAudio(
+        Transform parent,
+        MuseumGameManager manager,
+        AudioClip pickupClip,
+        AudioClip damageClip,
+        AudioClip winClip,
+        AudioClip musicClip)
+    {
+        GameObject audioRoot = new GameObject("Audio");
+        audioRoot.transform.SetParent(parent, false);
+
+        GameObject musicObject = new GameObject("Music");
+        musicObject.transform.SetParent(audioRoot.transform, false);
+        AudioSource musicSource = musicObject.AddComponent<AudioSource>();
+        musicSource.clip = musicClip;
+        musicSource.loop = true;
+        musicSource.playOnAwake = false;
+        musicSource.spatialBlend = 0f;
+        musicSource.volume = 0.35f;
+
+        GameObject sfxObject = new GameObject("SFX");
+        sfxObject.transform.SetParent(audioRoot.transform, false);
+        AudioSource sfxSource = sfxObject.AddComponent<AudioSource>();
+        sfxSource.playOnAwake = false;
+        sfxSource.spatialBlend = 0f;
+        sfxSource.volume = 0.8f;
+
+        manager.ConfigureAudio(musicSource, sfxSource, pickupClip, damageClip, winClip);
+    }
+
+    private static void ConfigureAudioImporters()
+    {
+        ConfigureAudioImporter(PickupAudioPath, AudioClipLoadType.DecompressOnLoad, AudioCompressionFormat.PCM, 1f);
+        ConfigureAudioImporter(DamageAudioPath, AudioClipLoadType.DecompressOnLoad, AudioCompressionFormat.PCM, 1f);
+        ConfigureAudioImporter(WinAudioPath, AudioClipLoadType.DecompressOnLoad, AudioCompressionFormat.PCM, 1f);
+        ConfigureAudioImporter(MusicAudioPath, AudioClipLoadType.Streaming, AudioCompressionFormat.Vorbis, 0.7f);
+    }
+
+    private static void ConfigureAudioImporter(
+        string path,
+        AudioClipLoadType loadType,
+        AudioCompressionFormat compressionFormat,
+        float quality)
+    {
+        if (AssetImporter.GetAtPath(path) is not AudioImporter importer)
+        {
+            Debug.LogWarning($"Museum Getaway audio file was not imported: {path}");
+            return;
+        }
+
+        AudioImporterSampleSettings settings = importer.defaultSampleSettings;
+        settings.loadType = loadType;
+        settings.compressionFormat = compressionFormat;
+        settings.quality = quality;
+        settings.preloadAudioData = loadType != AudioClipLoadType.Streaming;
+        importer.defaultSampleSettings = settings;
+        importer.forceToMono = false;
+        importer.SaveAndReimport();
     }
 
     private static void BuildArtifacts(

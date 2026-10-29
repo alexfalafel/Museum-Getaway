@@ -9,7 +9,7 @@ This file records only verified project evidence. `TBD` means the original gener
 | Unity 6.3 LTS / URP / Input System | Engine, rendering, input, primitives, colliders, UI, animation playback, builds | Unity-provided engine/tooling; consult the applicable Unity license for redistribution |
 | OpenAI Codex | Planning, C# and Editor tooling, debugging assistance, audit support, and documentation | AI-assisted output directed and evaluated by the project author; exact account terms not recorded here |
 | Tripo | Image-to-3D models, character Auto Rig, and generated character animations | Exact applicable account/public free-plan terms and source URLs are **TBD** and must be copied from the original Tripo sessions/account terms |
-| Audio generation tool | Not yet used for this project | **TBD after audio generation** |
+| Audio source/generation tool | Four WAV files supplied from the student's `Downloads/College` folder and integrated into gameplay | Original creation tool, prompts, source URL, and license/terms are **TBD**; they were not inferable from the files |
 | Trailer generation/editing tool | Not yet used for this project | **TBD after trailer production** |
 
 ## Tripo-generated assets
@@ -41,7 +41,14 @@ The imported Tripo models are visual children only. Gameplay collision is intent
 
 ## Audio assets
 
-No gameplay audio files are currently present under `Assets/Audio/`. Required pickup, damage/alarm, and win audio remain **MISSING**. Add the exact filename, prompt, source/tool, editing/import steps, URL, and license/terms only after the files exist.
+| Asset | Supplied filename / source | Unity location | Import and final use | Generation prompt / tool / terms |
+|---|---|---|---|---|
+| Artifact pickup SFX | `pickup.wav`, copied from `Downloads/College` | `Assets/Audio/SFX/pickup.wav` | PCM / Decompress On Load; 2D one-shot after an accepted artifact collection | **TBD — original creation record not supplied** |
+| Damage/alarm SFX | `alarm.wav`, copied from `Downloads/College` | `Assets/Audio/SFX/alarm.wav` | PCM / Decompress On Load; 2D one-shot only after damage passes the cooldown | **TBD — original creation record not supplied** |
+| Victory SFX | `win.wav`, copied from `Downloads/College` | `Assets/Audio/SFX/win.wav` | PCM / Decompress On Load; 2D one-shot once when the win state begins | **TBD — original creation record not supplied** |
+| Gameplay music | `music.wav`, copied from `Downloads/College` | `Assets/Audio/Music/music.wav` | Vorbis / Streaming; looping 2D gameplay music, stopped at win/loss | **TBD — original creation record not supplied** |
+
+The original files remain in Downloads. No source URL, creator, AI tool, prompt, or redistribution terms were present in the available evidence, so those fields require student confirmation before publication.
 
 ## External assets and references
 

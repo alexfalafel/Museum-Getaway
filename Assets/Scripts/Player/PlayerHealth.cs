@@ -34,6 +34,7 @@ namespace MuseumGetaway
             currentHealth = Mathf.Max(0, currentHealth - amount);
             nextDamageTime = Time.time + damageCooldown;
             gameManager.SetHealth(currentHealth, maximumHealth);
+            gameManager.PlayDamageSound();
 
             if (playerRenderer != null)
             {

@@ -13,7 +13,8 @@ Audit date: 2026-10-28. Status is based on files and Unity/build evidence in thi
 | Tripo generation/import documentation | PARTIAL | `ATTRIBUTION.md`, `PROMPT_LOG.md` | Paste exact original generation prompts, dates/source URLs, and applicable Tripo/free-plan terms |
 | Additional ThiefCharacter | COMPLETE | `ThiefCharacter.glb`, extracted animations, Animator Controller, `PlayerAnimationDriver.cs` | Add exact original generation/animation prompts and terms to finish its documentation |
 | Additional RomanPillar | MISSING | Builder fallback slot exists, but `RomanPillar.glb` does not | Optional for the minimum-three rubric; do not claim it as shipped unless imported |
-| Gameplay audio | MISSING | `Assets/Audio/` contains no sound files; no AudioSource/AudioClip gameplay implementation found | Add pickup, damage/alarm, and win audio; test and document prompts/sources/terms |
+| Gameplay audio | COMPLETE | `Assets/Audio/`, `MuseumGameManager.cs`, `PlayerHealth.cs`, and builder-created Music/SFX AudioSources provide pickup, accepted-damage, win, and looping gameplay music | Perform final human listening/volume check; supply original prompts/tool/terms for attribution |
+| Flat museum roof/ceiling | COMPLETE | `MuseumProceduralGenerator.cs`, `BuildMuseumGetaway.cs`, and `GameplayHiddenRoof` layer; roof remains active but is excluded from gameplay-camera culling | Inspect Scene view if desired; no gameplay action required |
 | 30–60 second AI-made trailer with gameplay | MISSING | No video file, trailer project, capture, prompts, or link found | Capture gameplay, create/export trailer, document prompts, publish and link it |
 | Unity source project | COMPLETE | `Assets/`, `Packages/`, `ProjectSettings/` | Publish without generated cache/build folders |
 | Unity `.gitignore` | COMPLETE | `.gitignore` includes Library, Temp, Logs, obj, Build, Builds, UserSettings, IDE and OS files | Recheck staged files after Git initialization |
@@ -31,4 +32,4 @@ Audit date: 2026-10-28. Status is based on files and Unity/build evidence in thi
 
 ## Submission blockers
 
-Do not submit as fully rubric-complete until gameplay audio, the trailer, original Tripo prompt/terms records, the hosted build link, and the public GitHub repository are complete.
+Do not submit as fully rubric-complete until the trailer, original Tripo/audio prompt and terms records, the hosted build link, and the public GitHub repository are complete. Complete the final human audio listening pass before packaging.

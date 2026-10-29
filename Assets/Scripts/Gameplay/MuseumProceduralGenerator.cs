@@ -9,6 +9,7 @@ namespace MuseumGetaway
     public sealed class MuseumProceduralGenerator : MonoBehaviour
     {
         private const int CameraObstacleLayer = 8;
+        private const int GameplayHiddenRoofLayer = 9;
         private const float RoomSize = 12f;
         private const float WallHeight = 4f;
         private const float DoorWidth = 4f;
@@ -266,16 +267,15 @@ namespace MuseumGetaway
 
             GameObject runRoot = new GameObject($"PROCEDURAL MUSEUM - Seed {CurrentSeed}");
             runRoot.transform.SetParent(generatedParent, false);
-            GameObject roofRoot = new GameObject("ROOF - Disabled For Gameplay Camera");
+            GameObject roofRoot = new GameObject("ROOF - Gameplay Hidden");
             roofRoot.transform.SetParent(runRoot.transform, false);
+            roofRoot.layer = GameplayHiddenRoofLayer;
 
             Dictionary<Vector2Int, RoomPlan> byPosition = BuildPositionMap(plan);
             foreach (RoomPlan room in plan)
             {
                 BuildRoom(room, byPosition, runRoot.transform, roofRoot.transform, random);
             }
-
-            roofRoot.SetActive(false);
 
             RoomPlan startRoom = plan.Find(room => room.IsStart);
             RoomPlan finalRoom = plan.Find(room => room.IsFinal);
@@ -316,7 +316,8 @@ namespace MuseumGetaway
             roomRoot.transform.SetParent(parent, false);
 
             CreatePrimitive("Marble Floor", PrimitiveType.Cube, center + new Vector3(0f, -0.1f, 0f), new Vector3(RoomSize, 0.2f, RoomSize), floorMaterial, roomRoot.transform, true);
-            CreatePrimitive("Flat Ceiling", PrimitiveType.Cube, center + new Vector3(0f, 4.2f, 0f), new Vector3(RoomSize, 0.25f, RoomSize), roofMaterial, roofParent, false);
+            GameObject ceiling = CreatePrimitive("Flat Museum Roof", PrimitiveType.Cube, center + new Vector3(0f, 4.2f, 0f), new Vector3(RoomSize, 0.25f, RoomSize), roofMaterial, roofParent, false);
+            ceiling.layer = GameplayHiddenRoofLayer;
 
             bool north = occupied.ContainsKey(room.GridPosition + Vector2Int.up);
             bool east = occupied.ContainsKey(room.GridPosition + Vector2Int.right);

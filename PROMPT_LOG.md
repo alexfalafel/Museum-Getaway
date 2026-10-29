@@ -576,15 +576,45 @@ This log is maintained chronologically. Each entry records the prompt category, 
 
 ---
 
-## Audio generation prompts and iteration — not yet completed
+## Audio generation prompts and iteration
 
-No Museum Getaway audio-generation session or audio files were found. The following are requirements/placeholders, **not claims that generation happened**:
+No original Museum Getaway audio-generation session record was found. Audio files were later supplied and integrated, but their creation prompts/tool/terms remain unknown. The following fields are requirements/placeholders, **not claims about how those files were generated**:
 
 - Artifact pickup sound prompt/tool/file/source/terms: **TBD after generation**
 - Player damage or alarm sound prompt/tool/file/source/terms: **TBD after generation**
 - Win sound prompt/tool/file/source/terms: **TBD after generation**
 - Optional background music prompt/tool/file/source/terms: **TBD if created**
-- Unity import and event wiring notes: **TBD after implementation and listening test**
+- Unity import and event wiring notes: implemented 2026-10-28; final human listening test remains
+
+### 2026-10-28 — Supplied audio integration and gameplay-hidden roof
+
+**Category:** Refinement / audio import / roof presentation / error recovery
+
+**Prompt:** Keep all working gameplay, camera, and procedural systems frozen. Add a proper flat museum roof that remains active and visible in the editor but is hidden from the gameplay camera using a culling layer. Inspect Downloads for existing audio, copy relevant files without moving or deleting originals, wire pickup, accepted-damage/alarm, win, and looping gameplay music, update documentation, rebuild, and validate.
+
+**Work performed:**
+
+- Found four 48 kHz, 16-bit stereo PCM WAV files in `Downloads/College`: `pickup.wav` (3.00 s), `alarm.wav` (1.48 s), `win.wav` (3.56 s), and `music.wav` (120 s). Copied them into `Assets/Audio/SFX/` and `Assets/Audio/Music/`; the originals were left untouched.
+- Configured SFX as PCM / Decompress On Load and music as Vorbis / Streaming. The builder creates separate 2D Music and SFX AudioSources.
+- Wired pickup only after a successful collection, alarm only after damage passes the cooldown, victory once after the win state changes, and looping music during active gameplay. Music stops on win/loss.
+- Added a flat roof tile over every generated room under `ROOF - Gameplay Hidden`. The active roof uses layer 9 (`GameplayHiddenRoof`), and the gameplay camera excludes that layer while Scene view remains unaffected.
+- Rebuilt through `Tools > Build Museum Getaway` and entered Play Mode. A 15-room run generated with the interior unobstructed by the active roof; audio references and import settings were verified. Audible volume balance still requires a human listening pass.
+
+**Result:** Roof coverage, camera exclusion, audio imports, and event wiring are present without changing reward, damage, timer, win/loss, restart, camera control, or procedural layout behavior.
+
+**Errors / recovery:** Unity 6.3 rejected the obsolete `AudioImporter.preloadAudioData` property (`CS0619`). Preload was moved into `AudioImporterSampleSettings.preloadAudioData`; the project then compiled cleanly and exited Safe Mode.
+
+### 2026-10-28 — Main Menu launch-flow recovery
+
+**Category:** Bug fix / submission polish
+
+**Prompt:** The Main Menu no longer appeared after rebuilding.
+
+**Work performed:** Verified that `Assets/Scenes/MainMenu.unity` still existed, contained NEW GAME and CONTROLS UI, and remained enabled at build index 0. Updated `Tools > Build Museum Getaway` to reopen `MainMenu.unity` after saving the generated gameplay scene.
+
+**Result:** Rebuilding no longer leaves the gameplay scene as the active Play Mode entry point. Pressing Play after a rebuild begins at the existing Main Menu; gameplay and menu contents were not redesigned.
+
+**Errors / recovery:** The menu had not been deleted. The builder was simply leaving `MuseumGetaway.unity` open after generation.
 
 ---
 

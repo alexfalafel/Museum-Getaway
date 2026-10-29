@@ -17,6 +17,11 @@ namespace MuseumGetaway
         [SerializeField] private GameHUD hud;
         [SerializeField] private EndScreenUI endScreen;
         [SerializeField] private GetawayExit getawayExit;
+        [SerializeField] private AudioSource musicSource;
+        [SerializeField] private AudioSource sfxSource;
+        [SerializeField] private AudioClip pickupClip;
+        [SerializeField] private AudioClip damageClip;
+        [SerializeField] private AudioClip winClip;
 
         private int loot;
         private int collectedArtifacts;
@@ -57,6 +62,20 @@ namespace MuseumGetaway
             Configure(artifactCount, duration, gameHud, gameEndScreen, exit);
         }
 
+        public void ConfigureAudio(
+            AudioSource music,
+            AudioSource effects,
+            AudioClip pickup,
+            AudioClip damage,
+            AudioClip victory)
+        {
+            musicSource = music;
+            sfxSource = effects;
+            pickupClip = pickup;
+            damageClip = damage;
+            winClip = victory;
+        }
+
         private void Start()
         {
             Time.timeScale = 1f;
@@ -66,6 +85,10 @@ namespace MuseumGetaway
             getawayExit.SetExitActive(false);
             hud.SetRooms(RoomCount);
             RefreshHud();
+            if (musicSource != null && musicSource.clip != null && !musicSource.isPlaying)
+            {
+                musicSource.Play();
+            }
         }
 
         private void Update()
@@ -94,6 +117,7 @@ namespace MuseumGetaway
             loot += cashValue;
             collectedArtifacts++;
             hud.ShowLootGain(cashValue);
+            PlayOneShot(pickupClip);
 
             if (!alarmActive)
             {
@@ -122,6 +146,11 @@ namespace MuseumGetaway
             Lose("YOU WERE CAUGHT!");
         }
 
+        public void PlayDamageSound()
+        {
+            PlayOneShot(damageClip);
+        }
+
         public void Win()
         {
             if (!IsPlaying)
@@ -131,6 +160,8 @@ namespace MuseumGetaway
 
             State = GameState.Won;
             SetGameplayCursor(false);
+            StopMusic();
+            PlayOneShot(winClip);
             hud.HideMessage();
             endScreen.ShowWin(loot);
         }
@@ -152,8 +183,25 @@ namespace MuseumGetaway
 
             State = GameState.Lost;
             SetGameplayCursor(false);
+            StopMusic();
             hud.HideMessage();
             endScreen.ShowLose(reason, loot);
+        }
+
+        private void PlayOneShot(AudioClip clip)
+        {
+            if (sfxSource != null && clip != null)
+            {
+                sfxSource.PlayOneShot(clip);
+            }
+        }
+
+        private void StopMusic()
+        {
+            if (musicSource != null)
+            {
+                musicSource.Stop();
+            }
         }
 
         private void RefreshHud()
