@@ -649,6 +649,72 @@ The final trailer must contain actual Museum Getaway gameplay footage mixed with
 
 **Errors / recovery:** What broke, the fix prompt used, and the outcome. Write `None` when not applicable.
 
+## Final Asset and Submission Records
+
+### Tripo Asset: Golden Idol
+- **Purpose:** Reward / artifact visual
+- **Generation route:** Reference image generated for the project → Tripo Image-to-3D → Unity
+- **Reference image prompt:**
+  "Stylized low-poly golden museum idol/statue on a plain neutral background, centered, no pedestal, no text; chunky readable silhouette, shiny gold material, simple game-ready geometry, designed to be clearly visible from a top-down camera."
+- **Tripo export format:** `.glb`
+- **Texture resolution:** 2K
+- **Unity import location:** `Assets/Art/Models/Tripo/GoldenIdol/`
+- **Final use:** Replaces the placeholder artifact visual while the existing Unity collectible trigger and gameplay logic remain authoritative.
+- **Gameplay integration:** Visual only; existing `ArtifactCollectible` behavior is preserved.
+
+### Tripo Asset: Security Laser Emitter
+- **Purpose:** Damage / laser hazard visual
+- **Generation route:** Reference image generated for the project → Tripo Image-to-3D → Unity
+- **Reference image prompt:**
+  "Stylized low-poly black/dark-gray security laser emitter device with a red lens, centered on a plain neutral background, no laser beam, no text; chunky readable silhouette and simple game-ready geometry."
+- **Tripo export format:** `.glb`
+- **Texture resolution:** 2K
+- **Unity import location:** `Assets/Art/Models/Tripo/LaserEmitter/`
+- **Final use:** Visual emitter for the moving security lasers.
+- **Gameplay integration:** Visual only; the existing Unity laser beam, trigger, and `LaserHazard` behavior remain responsible for damage.
+
+### Tripo Asset: Getaway Van
+- **Purpose:** End / escape visual
+- **Generation route:** Reference image generated for the project → Tripo Image-to-3D → Unity
+- **Reference image prompt:**
+  "Stylized low-poly compact black getaway cargo van, three-quarter view, centered on a plain neutral background, simple wheels, clean game-ready geometry, readable silhouette from above, no driver, no environment, no text."
+- **Tripo export format:** `.glb`
+- **Texture resolution:** 2K
+- **Unity import location:** `Assets/Art/Models/Tripo/GetawayVan/`
+- **Final use:** Visual getaway vehicle placed at the rear escape location.
+- **Gameplay integration:** Visual only; the existing `GetawayExit` trigger and win condition remain responsible for the actual escape.
+
+### Tripo Asset: Animated Thief Character
+- **Purpose:** Player character visual
+- **Generation route:** Reference image → Tripo 3D model → Tripo Auto Rig / Humanoid rig → Tripo animation generation → Unity
+- **Character concept:** Cartoon museum thief with black beanie, black clothing, dark pants, black shoes, and a small dark backpack/money bag.
+- **Animations created:** Sneaking Walk and Cartoon Victory.
+- **Export format:** `.fbx`
+- **Unity use:** Player visual child with Animator.
+- **Gameplay integration:** Existing `CharacterController`, `PlayerMovement`, and `PlayerHealth` remain responsible for gameplay movement and collision. Root motion is disabled.
+
+### Tripo Reference Images
+The project used generated reference images as the input stage for the Tripo Image-to-3D workflow. These references were intentionally designed as isolated, centered objects on simple backgrounds so that Tripo could reconstruct them reliably.
+
+### Audio Integration
+- **Status:** Gameplay audio has been added and is active in the project.
+- **Implemented uses:** Artifact pickup, damage/alarm, victory, and background music.
+- **Unity location:** `Assets/Audio/`
+- **Source/tool details:** Use the actual source/tool and filenames from the imported audio files; do not invent attribution or licensing information.
+- **Verification:** Audio was manually checked in gameplay after integration.
+
+### Final Submission / Publishing
+- Unity source project published to the public GitHub repository:
+  `https://github.com/alexfalafel/Museum-Getaway`
+- Windows standalone build created successfully.
+- Windows build uploaded to the itch.io project as a downloadable build.
+- Web/browser build is being prepared separately for itch.io.
+- The trailer was omitted from the final submission and is not being represented as completed.
+
+### Final Verification
+- Core reward, damage, win, loss, restart, camera, procedural generation, Tripo integration, character animation, and gameplay audio were manually validated.
+- Final 200–300 word reflection remains below this section and should remain the final section of `PROMPT_LOG.md`.
+
 ---
 
 ## Final reflection (266 words)
